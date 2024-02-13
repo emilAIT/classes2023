@@ -1,4 +1,5 @@
 from time import time
+from flask import Flask, request
 
 name = 'AIT Chat'
 users = [] # names
@@ -36,8 +37,21 @@ def get_from_single_user(sender, receiver):
 
 ### Web Dev Lab
 ### 1. show all messages sent by sender
+def get_messages_by_sender(sender):
+    return messages.get(sender, [])
+
 ### 2. show all messages in database
+def get_all_messages():
+    return messages
+
 ### 3. show all messages received by receiver
+def get_messages_by_receiver(receiver):
+    output = []
+    for sender, lst in messages.items():
+        for d in lst:
+            if d['receiver'] == receiver:
+                output.append(d)
+    return output
 
 
 if __name__ == "__main__":
@@ -53,3 +67,22 @@ if __name__ == "__main__":
             sender = input('sender: ')
             receiver = input('receiver: ')
             print(f'messages sent by {sender} to {receiver} are : ', get_from_single_user(sender, receiver))
+
+
+## /COST
+            
+
+@app.route('/cost')
+def cost():
+    d = request.args.to_dict()
+    max_name = None
+    max_value = 0
+    total_cost = 0
+    for key, value in d.items():
+        val = int(value)
+        if max_value < val:
+            max_name = key
+            max_value = val
+        total_cost += val
+
+    return f'Samiy dorogoy napitok {max_name} tsenoy {max_value}, Total cost is {total_cost}, Average cost is {total_cost/len(d)}'
